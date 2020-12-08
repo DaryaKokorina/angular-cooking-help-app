@@ -3,8 +3,14 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'angular-cooking-help-app';
+
+  currentPage = 'recipe';
+
+  onNavigate(navItem: string): void {
+    this.currentPage = navItem;
+  }
 }
