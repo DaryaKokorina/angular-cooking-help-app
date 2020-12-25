@@ -7,10 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angular-cooking-help-app';
-
-  currentPage = 'recipe';
-
-  onNavigate(navItem: string): void {
-    this.currentPage = navItem;
-  }
 }
