@@ -21,10 +21,10 @@ export class RecipeEditComponent implements OnInit {
   ngOnInit(): void {
     this.route.params
       .subscribe((params: Params) => {
-      this.id = +params['id'];
-      this.editMode = params['id'] != null;
-      this.initForm();
-    });
+        this.id = +params['id'];
+        this.editMode = params['id'] != null;
+        this.initForm();
+      });
   }
 
   private initForm() {
@@ -80,14 +80,14 @@ export class RecipeEditComponent implements OnInit {
     if (this.editMode) {
       recipeId = this.id;
     } else {
-      recipeId = this.recipeService.getRecipes().length+1;
+      recipeId = this.recipeService.getRecipes().length + 1;
     }
 
     const newRecipe = new Recipe(
       recipeId,
       this.recipeForm.get('name').value,
       this.recipeForm.get('description').value,
-      this.recipeForm.get('imagePath').value,      
+      this.recipeForm.get('imagePath').value,
       this.recipeForm.get('ingredients').value,
     );
 

@@ -29,15 +29,15 @@ export class ShoppingEditComponent implements OnInit {
           name: this.editedItem.name,
           amount: this.editedItem.amount
         });
-      }, );      
+      });
     });
   }
 
   addOrUpdateItem(form: NgForm): void {
     const value = form.value;
     const newIngredient = new Ingredient(value.name, value.amount);
-    
-    this.editMode ? 
+
+    this.editMode ?
       this.slService.updateIngredient(this.editedItemIndex, newIngredient) :
       this.slService.addIngredient(newIngredient);
 
