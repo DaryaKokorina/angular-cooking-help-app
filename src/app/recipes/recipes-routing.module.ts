@@ -9,7 +9,7 @@ import { SelectRecipeAlertComponent } from "./select-recipe-alert/select-recipe-
 
 const routes: Routes = [
   {
-    path: 'recipes',
+    path: '',
     component: RecipesComponent,
     children: [
       { path: '', component: SelectRecipeAlertComponent },
