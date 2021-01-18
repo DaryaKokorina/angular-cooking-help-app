@@ -26,6 +26,8 @@ export class RecipeDetailsComponent implements OnInit {
     this.route.params.pipe(
       takeUntil(this.ngUnsusbcribe)
     ).subscribe(params => this.recipe = this.recipeService.getRecipe(+params['id']));
+
+    console.log('recipe', this.slService.getIngredients());
   }
 
   ngOnDestroy() {

@@ -3,15 +3,16 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { BehaviorSubject, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
+import { environment } from '../..//environments/environment';
 import { User } from "./user.model";
 
 export interface AuthResponseData {
   kind: string;
-  idToken:	string;
-  email:	string;
+  idToken: string;
+  email: string;
   refreshToken: string;
-  expiresIn:	string;
-  localId:	string;
+  expiresIn: string;
+  localId: string;
   registered?: boolean;
 }
 
@@ -21,11 +22,11 @@ export class AuthService {
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient,
-    private router: Router) {}
+    private router: Router) { }
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDq_BG91Pud-u4AgFWSsBeW9Q5_x4ci-QQ',
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
       {
         email: email,
         password: password,
@@ -41,7 +42,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDq_BG91Pud-u4AgFWSsBeW9Q5_x4ci-QQ',
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
       {
         email,
         password,
@@ -111,11 +112,11 @@ export class AuthService {
   private handleError(errorRes: HttpErrorResponse) {
     let errorMessage = 'An unknown error occured!';
 
-    if(!errorRes.error || !errorRes.error.error) {
+    if (!errorRes.error || !errorRes.error.error) {
       return throwError(errorMessage);
     }
 
-    switch(errorRes.error.error.message) {
+    switch (errorRes.error.error.message) {
       case 'EMAIL_EXISTS':
         errorMessage = 'This email has been alredy existed';
         break;

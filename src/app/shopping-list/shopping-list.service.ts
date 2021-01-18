@@ -18,17 +18,17 @@ export class ShoppingListService {
     return this.ingredients[index];
   }
 
-  addIngredient(ingredient: Ingredient) {    
-    this.ingredients.push(ingredient);    
+  addIngredient(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
   addIngredientsFromRecipe(ingredients: Ingredient[]): void {
-    this.ingredients = [ ...this.ingredients, ...ingredients];
+    this.ingredients = [...this.ingredients, ...ingredients];
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
-  updateIngredient(index: number, newIngredient: Ingredient) {    
+  updateIngredient(index: number, newIngredient: Ingredient) {
     this.ingredients[index] = newIngredient;
     this.ingredientsChanged.next(this.ingredients.slice());
   }
