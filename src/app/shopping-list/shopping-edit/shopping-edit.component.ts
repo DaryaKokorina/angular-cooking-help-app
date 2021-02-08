@@ -3,8 +3,9 @@ import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Ingredient } from '../../shared/ingredient.model';
+import * as fromApp from '../../store/app.reducer';
 import * as ShoppingListActions from '../store/shoppin-list.actions';
-import * as fromShoppingList from '../store/shopping-list.reducer';
+
 @Component({
   selector: 'app-shopping-edit',
   templateUrl: './shopping-edit.component.html',
@@ -18,7 +19,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   editMode: boolean;
   editedItem: Ingredient;
 
-  constructor(private store: Store<fromShoppingList.AppState>) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit(): void {
     this.subscription = this.store
@@ -53,11 +54,6 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     // );
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.store.dispatch(new ShoppingListActions.StopEdit());
-  }
-
   addOrUpdateItem(form: NgForm): void {
     const value = form.value;
     const newIngredient = new Ingredient(value.name, value.amount);
@@ -81,7 +77,12 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    this.onClear();
     this.store.dispatch(new ShoppingListActions.DeleteIngredient());
+    this.onClear();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
   }
 }
