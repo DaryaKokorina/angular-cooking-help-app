@@ -6,14 +6,13 @@ import {
   ViewChild
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import * as fromApp from '../store/app.reducer';
-import { AuthResponseData, AuthService } from './auth.service';
+import { AuthResponseData } from './auth.service';
 import * as AuthActions from './store/auth.actions';
 
 @Component({
@@ -24,17 +23,18 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
   errorMessage: string = null;
+
+  private storeSub: Subscription;
+
   @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
     private componentFactoryResolver: ComponentFactoryResolver,
     private store: Store<fromApp.AppState>
   ) {}
 
   ngOnInit() {
-    this.store.select('auth').subscribe((authState) => {
+    this.storeSub = this.store.select('auth').subscribe((authState) => {
       this.isLoading = authState.loading;
       this.errorMessage = authState.authError;
 
@@ -58,7 +58,8 @@ export class AuthComponent implements OnInit, OnDestroy {
       // authObs = this.authService.login(email, password);
       this.store.dispatch(new AuthActions.LoginStart({ email, password }));
     } else {
-      authObs = this.authService.signup(email, password);
+      // authObs = this.authService.signup(email, password);
+      this.store.dispatch(new AuthActions.SignupStart({ email, password }));
     }
 
     // authObs.subscribe(
@@ -79,7 +80,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   onHandleError() {
-    this.errorMessage = null;
+    this.store.dispatch(new AuthActions.ClearError());
   }
 
   private showErrorAlert(errorMessage: string) {
@@ -99,5 +100,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.storeSub.unsubscribe();
+  }
 }
