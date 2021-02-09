@@ -1,17 +1,26 @@
-import { Component, ComponentFactoryResolver, ViewChild } from "@angular/core";
-import { NgForm } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { take } from "rxjs/operators";
-import { AlertComponent } from "../shared/alert/alert.component";
-import { PlaceholderDirective } from "../shared/placeholder/placeholder.directive";
-import { AuthResponseData, AuthService } from "./auth.service";
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
+import * as fromApp from '../store/app.reducer';
+import { AuthResponseData, AuthService } from './auth.service';
+import * as AuthActions from './store/auth.actions';
 
 @Component({
   selector: 'app-auth',
-  templateUrl: './auth.component.html'
+  templateUrl: './auth.component.html',
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
   errorMessage: string = null;
@@ -20,8 +29,20 @@ export class AuthComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) { }
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<fromApp.AppState>
+  ) {}
+
+  ngOnInit() {
+    this.store.select('auth').subscribe((authState) => {
+      this.isLoading = authState.loading;
+      this.errorMessage = authState.authError;
+
+      if (this.errorMessage) {
+        this.showErrorAlert(this.errorMessage);
+      }
+    });
+  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -34,22 +55,25 @@ export class AuthComponent {
     let authObs: Observable<AuthResponseData>;
 
     if (this.isLoginMode) {
-      authObs = this.authService.login(email, password);
+      // authObs = this.authService.login(email, password);
+      this.store.dispatch(new AuthActions.LoginStart({ email, password }));
     } else {
       authObs = this.authService.signup(email, password);
     }
 
-    authObs.subscribe(
-      resData => {
-        console.log(resData);
-        this.isLoading = false;
-        this.router.navigate(['/recipes']);
-      }, errorMessage => {
-        console.log(errorMessage);
-        this.errorMessage = errorMessage;
-        this.showErrorAlert(errorMessage);
-        this.isLoading = false;
-      });
+    // authObs.subscribe(
+    //   (resData) => {
+    //     console.log(resData);
+    //     this.isLoading = false;
+    //     this.router.navigate(['/recipes']);
+    //   },
+    //   (errorMessage) => {
+    //     console.log(errorMessage);
+    //     this.errorMessage = errorMessage;
+    //     this.showErrorAlert(errorMessage);
+    //     this.isLoading = false;
+    //   }
+    // );
 
     form.reset();
   }
@@ -59,7 +83,9 @@ export class AuthComponent {
   }
 
   private showErrorAlert(errorMessage: string) {
-    const alertCmpFactory = this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const alertCmpFactory = this.componentFactoryResolver.resolveComponentFactory(
+      AlertComponent
+    );
 
     const hostViewContainerRef = this.alertHost.viewContainerRef;
 
@@ -68,10 +94,10 @@ export class AuthComponent {
 
     componentRef.instance.message = errorMessage;
 
-    componentRef.instance.close.pipe(
-      take(1)
-    ).subscribe(() => {
+    componentRef.instance.close.pipe(take(1)).subscribe(() => {
       hostViewContainerRef.clear();
     });
   }
+
+  ngOnDestroy() {}
 }

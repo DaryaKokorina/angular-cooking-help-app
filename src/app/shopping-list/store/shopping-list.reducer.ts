@@ -60,8 +60,8 @@ export function shoppingListReducer(
     case ShoppingListActions.START_EDIT:
       return {
         ...state,
-        editedIngredient: { ...state.ingredients[action.payload] },
-        editedIngredientIndex: action.payload,
+        editedIngredient: { ...state.ingredients[+action.payload] },
+        editedIngredientIndex: +action.payload,
       };
 
     case ShoppingListActions.STOP_EDIT:
