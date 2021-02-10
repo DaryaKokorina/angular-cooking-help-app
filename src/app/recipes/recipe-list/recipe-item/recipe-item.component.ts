@@ -1,5 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import { Recipe } from '../../recipe.model';
 
 @Component({
@@ -7,21 +6,9 @@ import { Recipe } from '../../recipe.model';
   templateUrl: './recipe-item.component.html',
   styleUrls: ['./recipe-item.component.css'],
 })
-export class RecipeItemComponent implements OnInit, OnDestroy {
+export class RecipeItemComponent implements OnInit {
   @Input() recipe: Recipe;
+  @Input() currentRecipeId: number;
 
-  currentRecipeId: number;
-
-  ngUnsubscribe = new Subject();
-
-  constructor(
-  ) { }
-
-  ngOnInit(): void {    
-  }
-
-  ngOnDestroy(){
-    this.ngUnsubscribe.next(null);
-    this.ngUnsubscribe.complete();
-  }
+  ngOnInit(): void {}
 }

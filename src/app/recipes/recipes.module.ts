@@ -10,18 +10,14 @@ import { RecipesComponent } from './recipes.component';
 import { SelectRecipeAlertComponent } from './select-recipe-alert/select-recipe-alert.component';
 
 @NgModule({
-  imports: [
-    ReactiveFormsModule,
-    RecipesRoutingModule,
-    SharedModule
-  ],
+  imports: [ReactiveFormsModule, RecipesRoutingModule, SharedModule],
   declarations: [
     RecipesComponent,
     RecipeListComponent,
     RecipeDetailsComponent,
     RecipeItemComponent,
     RecipeEditComponent,
-    SelectRecipeAlertComponent
-  ]
+    SelectRecipeAlertComponent,
+  ],
 })
-export class RecipesModule { }
+export class RecipesModule {}
